@@ -9,11 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as PedidosRouteImport } from './routes/pedidos'
+import { Route as NotificacoesRouteImport } from './routes/notificacoes'
 import { Route as MapaRouteImport } from './routes/mapa'
 import { Route as FornecedoresRouteImport } from './routes/fornecedores'
 import { Route as CotacoesRouteImport } from './routes/cotacoes'
+import { Route as ConfiguracoesRouteImport } from './routes/configuracoes'
+import { Route as BuscaRouteImport } from './routes/busca'
+import { Route as AprovacoesRouteImport } from './routes/aprovacoes'
 import { Route as IndexRouteImport } from './routes/index'
 
+const PedidosRoute = PedidosRouteImport.update({
+  id: '/pedidos',
+  path: '/pedidos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificacoesRoute = NotificacoesRouteImport.update({
+  id: '/notificacoes',
+  path: '/notificacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MapaRoute = MapaRouteImport.update({
   id: '/mapa',
   path: '/mapa',
@@ -29,6 +44,21 @@ const CotacoesRoute = CotacoesRouteImport.update({
   path: '/cotacoes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ConfiguracoesRoute = ConfiguracoesRouteImport.update({
+  id: '/configuracoes',
+  path: '/configuracoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BuscaRoute = BuscaRouteImport.update({
+  id: '/busca',
+  path: '/busca',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AprovacoesRoute = AprovacoesRouteImport.update({
+  id: '/aprovacoes',
+  path: '/aprovacoes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -37,40 +67,102 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/aprovacoes': typeof AprovacoesRoute
+  '/busca': typeof BuscaRoute
+  '/configuracoes': typeof ConfiguracoesRoute
   '/cotacoes': typeof CotacoesRoute
   '/fornecedores': typeof FornecedoresRoute
   '/mapa': typeof MapaRoute
+  '/notificacoes': typeof NotificacoesRoute
+  '/pedidos': typeof PedidosRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/aprovacoes': typeof AprovacoesRoute
+  '/busca': typeof BuscaRoute
+  '/configuracoes': typeof ConfiguracoesRoute
   '/cotacoes': typeof CotacoesRoute
   '/fornecedores': typeof FornecedoresRoute
   '/mapa': typeof MapaRoute
+  '/notificacoes': typeof NotificacoesRoute
+  '/pedidos': typeof PedidosRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/aprovacoes': typeof AprovacoesRoute
+  '/busca': typeof BuscaRoute
+  '/configuracoes': typeof ConfiguracoesRoute
   '/cotacoes': typeof CotacoesRoute
   '/fornecedores': typeof FornecedoresRoute
   '/mapa': typeof MapaRoute
+  '/notificacoes': typeof NotificacoesRoute
+  '/pedidos': typeof PedidosRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cotacoes' | '/fornecedores' | '/mapa'
+  fullPaths:
+    | '/'
+    | '/aprovacoes'
+    | '/busca'
+    | '/configuracoes'
+    | '/cotacoes'
+    | '/fornecedores'
+    | '/mapa'
+    | '/notificacoes'
+    | '/pedidos'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cotacoes' | '/fornecedores' | '/mapa'
-  id: '__root__' | '/' | '/cotacoes' | '/fornecedores' | '/mapa'
+  to:
+    | '/'
+    | '/aprovacoes'
+    | '/busca'
+    | '/configuracoes'
+    | '/cotacoes'
+    | '/fornecedores'
+    | '/mapa'
+    | '/notificacoes'
+    | '/pedidos'
+  id:
+    | '__root__'
+    | '/'
+    | '/aprovacoes'
+    | '/busca'
+    | '/configuracoes'
+    | '/cotacoes'
+    | '/fornecedores'
+    | '/mapa'
+    | '/notificacoes'
+    | '/pedidos'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AprovacoesRoute: typeof AprovacoesRoute
+  BuscaRoute: typeof BuscaRoute
+  ConfiguracoesRoute: typeof ConfiguracoesRoute
   CotacoesRoute: typeof CotacoesRoute
   FornecedoresRoute: typeof FornecedoresRoute
   MapaRoute: typeof MapaRoute
+  NotificacoesRoute: typeof NotificacoesRoute
+  PedidosRoute: typeof PedidosRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/pedidos': {
+      id: '/pedidos'
+      path: '/pedidos'
+      fullPath: '/pedidos'
+      preLoaderRoute: typeof PedidosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notificacoes': {
+      id: '/notificacoes'
+      path: '/notificacoes'
+      fullPath: '/notificacoes'
+      preLoaderRoute: typeof NotificacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mapa': {
       id: '/mapa'
       path: '/mapa'
@@ -92,6 +184,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CotacoesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/configuracoes': {
+      id: '/configuracoes'
+      path: '/configuracoes'
+      fullPath: '/configuracoes'
+      preLoaderRoute: typeof ConfiguracoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/busca': {
+      id: '/busca'
+      path: '/busca'
+      fullPath: '/busca'
+      preLoaderRoute: typeof BuscaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aprovacoes': {
+      id: '/aprovacoes'
+      path: '/aprovacoes'
+      fullPath: '/aprovacoes'
+      preLoaderRoute: typeof AprovacoesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,9 +217,14 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AprovacoesRoute: AprovacoesRoute,
+  BuscaRoute: BuscaRoute,
+  ConfiguracoesRoute: ConfiguracoesRoute,
   CotacoesRoute: CotacoesRoute,
   FornecedoresRoute: FornecedoresRoute,
   MapaRoute: MapaRoute,
+  NotificacoesRoute: NotificacoesRoute,
+  PedidosRoute: PedidosRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
