@@ -51,6 +51,16 @@ export interface Quote {
   deadline: string;
   status: QuoteStatus;
   proposals: QuoteProposal[];
+  notes?: string;
+  category?: Category;
+  attachments?: RfqAttachment[];
+}
+
+export interface RfqAttachment {
+  id: string;
+  name: string;
+  size: number;
+  type: string;
 }
 
 export const quotes: Quote[] = [
