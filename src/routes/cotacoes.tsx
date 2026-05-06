@@ -7,7 +7,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { quotes, suppliers, defaultWeights, rankProposals, formatBRL, type ScoringWeights } from "@/lib/mock-data";
+import { quotes as initialQuotes, defaultWeights, rankProposals, formatBRL, type ScoringWeights, type Quote } from "@/lib/mock-data";
+import { NewRfqDialog } from "@/components/NewRfqDialog";
 
 export const Route = createFileRoute("/cotacoes")({
   head: () => ({ meta: [{ title: "Cotações & RFQ — Procura" }] }),
@@ -15,7 +16,9 @@ export const Route = createFileRoute("/cotacoes")({
 });
 
 function QuotesPage() {
-  const [selected, setSelected] = useState(quotes[0]!.id);
+  const [quotes, setQuotes] = useState<Quote[]>(initialQuotes);
+  const [selected, setSelected] = useState(initialQuotes[0]!.id);
+  const [open, setOpen] = useState(false);
   const [weights, setWeights] = useState<ScoringWeights>(defaultWeights);
   const quote = quotes.find((q) => q.id === selected)!;
   const ranked = useMemo(() => rankProposals(quote.proposals, weights), [quote, weights]);
@@ -32,7 +35,15 @@ function QuotesPage() {
       <PageHeader
         title="Cotações (RFQ)"
         description="Compare propostas e identifique o melhor fornecedor com IA de decisão"
-        actions={<Button><Plus className="h-4 w-4 mr-1" />Nova RFQ</Button>}
+        actions={<Button onClick={() => setOpen(true)}><Plus className="h-4 w-4 mr-1" />Nova RFQ</Button>}
+      />
+      <NewRfqDialog
+        open={open}
+        onOpenChange={setOpen}
+        onCreated={(q) => {
+          setQuotes((prev) => [q, ...prev]);
+          setSelected(q.id);
+        }}
       />
 
       <div className="grid gap-4 lg:grid-cols-[320px_1fr]">

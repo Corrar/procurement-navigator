@@ -4,6 +4,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Toaster } from "@/components/ui/sonner";
 
 export function AppShell() {
   return (
@@ -32,6 +33,7 @@ export function AppShell() {
           </main>
         </div>
       </div>
+      <Toaster richColors position="top-right" />
     </SidebarProvider>
   );
 }
