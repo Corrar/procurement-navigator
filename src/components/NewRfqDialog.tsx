@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
-import { CalendarIcon, Package, Send, Users } from "lucide-react";
+import { CalendarIcon, Package, Paperclip, Send, Users, X, FileText } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -34,6 +34,7 @@ import {
   type Category,
   type Quote,
   type QuoteProposal,
+  type RfqAttachment,
 } from "@/lib/mock-data";
 
 const CATEGORIES: Category[] = [
@@ -61,6 +62,8 @@ export function NewRfqDialog({ open, onOpenChange, onCreated }: Props) {
   );
   const [notes, setNotes] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [attachments, setAttachments] = useState<RfqAttachment[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const eligible = useMemo(
     () =>
@@ -78,6 +81,7 @@ export function NewRfqDialog({ open, onOpenChange, onCreated }: Props) {
     setDeadline(new Date(Date.now() + 14 * 86400000));
     setNotes("");
     setSelectedIds([]);
+    setAttachments([]);
   };
 
   const close = (v: boolean) => {
@@ -89,6 +93,29 @@ export function NewRfqDialog({ open, onOpenChange, onCreated }: Props) {
     setSelectedIds((prev) =>
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
     );
+
+  const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
+  const handleFiles = (files: FileList | null) => {
+    if (!files) return;
+    const next: RfqAttachment[] = [];
+    Array.from(files).forEach((f) => {
+      if (f.size > MAX_SIZE) {
+        toast.error(`${f.name} excede 10 MB`);
+        return;
+      }
+      next.push({
+        id: `att_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+        name: f.name,
+        size: f.size,
+        type: f.type || "application/octet-stream",
+      });
+    });
+    setAttachments((prev) => [...prev, ...next]);
+  };
+  const removeAttachment = (id: string) =>
+    setAttachments((prev) => prev.filter((a) => a.id !== id));
+  const formatBytes = (b: number) =>
+    b < 1024 ? `${b} B` : b < 1024 * 1024 ? `${(b / 1024).toFixed(1)} KB` : `${(b / 1024 / 1024).toFixed(1)} MB`;
 
   const canNext1 = product.trim().length > 2 && !!category && quantity > 0 && !!deadline;
   const canNext2 = selectedIds.length >= 1;
@@ -114,10 +141,13 @@ export function NewRfqDialog({ open, onOpenChange, onCreated }: Props) {
       deadline: deadline!.toISOString().slice(0, 10),
       status: "pendente",
       proposals,
+      notes: notes.trim() || undefined,
+      category: category as Category,
+      attachments: attachments.length ? attachments : undefined,
     };
     onCreated(quote);
     toast.success(`RFQ ${code} enviada`, {
-      description: `${selectedIds.length} fornecedor(es) notificado(s).`,
+      description: `${selectedIds.length} fornecedor(es) notificado(s)${attachments.length ? ` • ${attachments.length} anexo(s)` : ""}.`,
     });
     close(false);
   };
@@ -218,6 +248,55 @@ export function NewRfqDialog({ open, onOpenChange, onCreated }: Props) {
                 rows={3}
               />
             </div>
+            <div className="grid gap-1.5">
+              <Label className="flex items-center gap-1.5">
+                <Paperclip className="h-3.5 w-3.5" />
+                Anexos (especificações, termos, requisitos)
+              </Label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  handleFiles(e.target.files);
+                  if (fileInputRef.current) fileInputRef.current.value = "";
+                }}
+                accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.png,.jpg,.jpeg,.zip"
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="justify-start w-fit"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Paperclip className="h-4 w-4 mr-1" />
+                Adicionar arquivos
+              </Button>
+              {attachments.length > 0 && (
+                <ul className="mt-1 border rounded-lg divide-y">
+                  {attachments.map((a) => (
+                    <li key={a.id} className="flex items-center gap-2 p-2 text-sm">
+                      <FileText className="h-4 w-4 text-muted-foreground shrink-0" />
+                      <span className="flex-1 truncate">{a.name}</span>
+                      <span className="text-xs text-muted-foreground tabular-nums">{formatBytes(a.size)}</span>
+                      <button
+                        type="button"
+                        onClick={() => removeAttachment(a.id)}
+                        className="text-muted-foreground hover:text-destructive"
+                        aria-label="Remover"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <p className="text-[11px] text-muted-foreground">
+                PDF, DOC, XLS, imagens ou ZIP — até 10 MB cada.
+              </p>
+            </div>
           </div>
         )}
 
@@ -277,6 +356,7 @@ export function NewRfqDialog({ open, onOpenChange, onCreated }: Props) {
             <SummaryRow label="Quantidade" value={String(quantity)} />
             <SummaryRow label="Prazo" value={deadline ? format(deadline, "dd/MM/yyyy") : "—"} />
             <SummaryRow label="Fornecedores" value={`${selectedIds.length} selecionado(s)`} />
+            <SummaryRow label="Anexos" value={attachments.length ? `${attachments.length} arquivo(s)` : "Nenhum"} />
             <div className="rounded-lg bg-muted/40 p-3 text-xs text-muted-foreground">
               Ao confirmar, a RFQ será enviada simultaneamente para todos os fornecedores
               selecionados. Você poderá comparar as propostas no ranking inteligente.
