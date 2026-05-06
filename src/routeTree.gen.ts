@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RfqsRouteImport } from './routes/rfqs'
 import { Route as PedidosRouteImport } from './routes/pedidos'
 import { Route as NotificacoesRouteImport } from './routes/notificacoes'
 import { Route as MapaRouteImport } from './routes/mapa'
@@ -19,6 +20,11 @@ import { Route as BuscaRouteImport } from './routes/busca'
 import { Route as AprovacoesRouteImport } from './routes/aprovacoes'
 import { Route as IndexRouteImport } from './routes/index'
 
+const RfqsRoute = RfqsRouteImport.update({
+  id: '/rfqs',
+  path: '/rfqs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PedidosRoute = PedidosRouteImport.update({
   id: '/pedidos',
   path: '/pedidos',
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/mapa': typeof MapaRoute
   '/notificacoes': typeof NotificacoesRoute
   '/pedidos': typeof PedidosRoute
+  '/rfqs': typeof RfqsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/mapa': typeof MapaRoute
   '/notificacoes': typeof NotificacoesRoute
   '/pedidos': typeof PedidosRoute
+  '/rfqs': typeof RfqsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/mapa': typeof MapaRoute
   '/notificacoes': typeof NotificacoesRoute
   '/pedidos': typeof PedidosRoute
+  '/rfqs': typeof RfqsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/notificacoes'
     | '/pedidos'
+    | '/rfqs'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/notificacoes'
     | '/pedidos'
+    | '/rfqs'
   id:
     | '__root__'
     | '/'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/mapa'
     | '/notificacoes'
     | '/pedidos'
+    | '/rfqs'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,10 +157,18 @@ export interface RootRouteChildren {
   MapaRoute: typeof MapaRoute
   NotificacoesRoute: typeof NotificacoesRoute
   PedidosRoute: typeof PedidosRoute
+  RfqsRoute: typeof RfqsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/rfqs': {
+      id: '/rfqs'
+      path: '/rfqs'
+      fullPath: '/rfqs'
+      preLoaderRoute: typeof RfqsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/pedidos': {
       id: '/pedidos'
       path: '/pedidos'
@@ -225,6 +245,7 @@ const rootRouteChildren: RootRouteChildren = {
   MapaRoute: MapaRoute,
   NotificacoesRoute: NotificacoesRoute,
   PedidosRoute: PedidosRoute,
+  RfqsRoute: RfqsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

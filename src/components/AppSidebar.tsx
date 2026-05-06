@@ -4,6 +4,7 @@ import {
   Building2,
   Map,
   FileSpreadsheet,
+  Inbox,
   CheckSquare,
   Bell,
   Settings,
@@ -28,6 +29,7 @@ const main = [
   { title: "Fornecedores", url: "/fornecedores", icon: Building2 },
   { title: "Mapa", url: "/mapa", icon: Map },
   { title: "Cotações (RFQ)", url: "/cotacoes", icon: FileSpreadsheet },
+  { title: "Minhas RFQs", url: "/rfqs", icon: Inbox },
   { title: "Aprovações", url: "/aprovacoes", icon: CheckSquare },
   { title: "Pedidos", url: "/pedidos", icon: ShoppingCart },
 ];
